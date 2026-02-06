@@ -128,7 +128,7 @@ export function TeamSection({ isDarkMode }: TeamSectionProps) {
                     SEO Ex.
                   </p>
                   <p className="text-xs text-gray-500 italic leading-relaxed">
-                    I loved their product, They are truly creative! Wish the best for them. Their project was soo much efficient and better than ours
+                    I loved their product, They are truly creative! Wish the best for them. Their project was soo much efficient! and better than ours
                   </p>
                 </div>
               </div>
