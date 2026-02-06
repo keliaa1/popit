@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -28,6 +32,14 @@ body {
 
 .dotted-bg {
   background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.dotted-bg-dark {
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.3) 1.5px,
+    transparent 1.5px
+  );
   background-size: 20px 20px;
 }
 
@@ -675,4 +687,22 @@ body {
 .underline-animate:hover::after {
   width: 100%;
   background: #e63946;
+}
+/* Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+  width: max-content;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }

@@ -20,7 +20,7 @@ interface HeroSectionProps {
 export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
   return (
     <section
-      className={`relative w-full min-h-screen flex flex-col overflow-hidden transition-colors duration-300 ${isDarkMode ? "bg-[#0d1117]" : "dotted-bg"}`}
+      className={`relative w-full min-h-screen flex flex-col overflow-hidden transition-colors duration-300 ${isDarkMode ? "bg-[#0d1117] dotted-bg-dark" : "dotted-bg"}`}
     >
       {/* Navigation Bar */}
       <nav className="flex items-center justify-between px-8 md:px-12 py-8 z-20 w-full max-w-7xl mx-auto">
@@ -42,26 +42,26 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
           className={`hidden md:flex items-center gap-10 text-sm font-semibold uppercase tracking-wider transition-colors ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}
         >
           <Link
-            href="#"
-            className="hover:text-black transition-colors underline-animate"
+            href="#home"
+            className={`transition-colors underline-animate ${isDarkMode ? "hover:text-white" : "hover:text-black"}`}
           >
             Home
           </Link>
           <Link
-            href="#"
-            className="hover:text-black transition-colors underline-animate"
+            href="#about"
+            className={`transition-colors underline-animate ${isDarkMode ? "hover:text-white" : "hover:text-black"}`}
           >
             About
           </Link>
           <Link
-            href="#"
-            className="hover:text-black transition-colors underline-animate"
+            href="#testimonials"
+            className={`transition-colors underline-animate ${isDarkMode ? "hover:text-white" : "hover:text-black"}`}
           >
             Testimonials
           </Link>
           <Link
-            href="#"
-            className="hover:text-black transition-colors underline-animate"
+            href="#templates"
+            className={`transition-colors underline-animate ${isDarkMode ? "hover:text-white" : "hover:text-black"}`}
           >
             Templates
           </Link>
@@ -80,16 +80,12 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
               <Moon className="w-5 h-5" />
             )}
           </button>
-          <button
-            className={`text-sm font-semibold transition-colors uppercase tracking-wider ${isDarkMode ? "text-gray-300 hover:text-white" : "text-gray-500 hover:text-black"}`}
-          >
-            Sign in
-          </button>
-          <button
-            className={`px-6 py-3 border rounded-xl text-sm font-semibold transition-colors shadow-sm uppercase tracking-wider ${isDarkMode ? "bg-gray-800 border-gray-700 text-white hover:bg-gray-700" : "bg-white border-gray-200 hover:bg-gray-50"}`}
+          <Link
+            href="#templates"
+            className={`px-6 py-3 hover:bg-[#1C2541] border rounded-xl text-sm font-semibold transition-colors shadow-sm uppercase tracking-wider ${isDarkMode ? "bg-gray-800 border-gray-700 text-white hover:bg-gray-700" : "bg-white border-gray-200 hover:bg-gray-50"}`}
           >
             Get Started
-          </button>
+          </Link>
         </div>
       </nav>
 
@@ -121,9 +117,12 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
           No design skills. No formatting stress. Just fill, click, download.
         </p>
 
-        <button className="px-8 py-4 bg-[#1C2541] text-white rounded-2xl font-bold text-lg shadow-2xl shadow-gray-300 hover:bg-[#0f1629] transition-all hover:scale-105 active:scale-95 z-10 uppercase tracking-wide btn-animate animate-slide-up stagger-3">
+        <Link
+          href="#templates"
+          className="px-8 py-4 bg-[#1C2541] text-white rounded-2xl font-bold text-lg shadow-2xl shadow-gray-300 hover:bg-[#0f1629] transition-all hover:scale-105 active:scale-95 z-10 uppercase tracking-wide btn-animate animate-slide-up stagger-3 inline-block"
+        >
           Get free demo
-        </button>
+        </Link>
 
         {/* --- Floating Elements --- */}
 
@@ -144,23 +143,39 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
         </div>
 
         {/* Top Right: Reminders Card */}
-        <div className="absolute top-[10%] right-[2%] w-64 h-auto bg-white/70 backdrop-blur-xl rounded-[2rem] p-6 shadow-2xl border border-white/50 animate-float-slow z-0 hidden xl:block text-left">
+        <div
+          className={`absolute top-[10%] right-[2%] w-64 h-auto backdrop-blur-xl rounded-[2rem] p-6 shadow-2xl border animate-float-slow z-0 hidden xl:block text-left transition-colors duration-300 ${isDarkMode ? "bg-[#3A506B] border-[#3A506B]" : "bg-white/70 border-white/50"}`}
+        >
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-bold text-gray-800 uppercase tracking-tight">
+            <span
+              className={`text-sm font-bold uppercase tracking-tight ${isDarkMode ? "text-white" : "text-gray-800"}`}
+            >
               Reminders
             </span>
-            <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center shadow-inner border border-gray-100">
-              <Clock className="w-4 h-4 text-gray-400" />
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center shadow-inner border ${isDarkMode ? "bg-white/10 border-white/10" : "bg-gray-50 border-gray-100"}`}
+            >
+              <Clock
+                className={`w-4 h-4 ${isDarkMode ? "text-white" : "text-gray-400"}`}
+              />
             </div>
           </div>
-          <div className="bg-gray-50/80 rounded-2xl p-4 border border-gray-100">
-            <div className="text-xs font-bold text-gray-800 mb-1">
+          <div
+            className={`rounded-2xl p-4 border ${isDarkMode ? "bg-white/10 border-white/10" : "bg-gray-50/80 border-gray-100"}`}
+          >
+            <div
+              className={`text-xs font-bold mb-1 ${isDarkMode ? "text-white" : "text-gray-800"}`}
+            >
               Today&apos;s Meeting
             </div>
-            <div className="text-[10px] text-gray-500 mb-3 tracking-wide font-medium">
+            <div
+              className={`text-[10px] mb-3 tracking-wide font-medium ${isDarkMode ? "text-gray-300" : "text-gray-500"}`}
+            >
               Call with marketing team
             </div>
-            <div className="flex items-center gap-2 bg-blue-50 w-fit px-3 py-1.5 rounded-lg border border-blue-100">
+            <div
+              className={`flex items-center gap-2 w-fit px-3 py-1.5 rounded-lg border ${isDarkMode ? "bg-blue-500/20 border-blue-500/20" : "bg-blue-50 border-blue-100"}`}
+            >
               <Clock className="w-3 h-3 text-blue-400" />
               <span className="text-[10px] font-bold text-blue-500 uppercase">
                 12:00 - 13:45
@@ -170,8 +185,12 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
         </div>
 
         {/* Bottom Left: Today's Tasks */}
-        <div className="absolute bottom-[15%] left-[2%] w-72 bg-white/90 backdrop-blur-xl rounded-[2rem] p-6 shadow-2xl border border-white/50 animate-float-slow hidden xl:block text-left scale-90">
-          <h3 className="text-sm font-bold text-gray-800 mb-4 uppercase tracking-tight">
+        <div
+          className={`absolute bottom-[15%] left-[2%] w-72 backdrop-blur-xl rounded-[2rem] p-6 shadow-2xl border animate-float-slow hidden xl:block text-left scale-90 transition-colors duration-300 ${isDarkMode ? "bg-[#3A506B] border-[#3A506B]" : "bg-white/90 border-white/50"}`}
+        >
+          <h3
+            className={`text-sm font-bold mb-4 uppercase tracking-tight ${isDarkMode ? "text-white" : "text-gray-800"}`}
+          >
             Today&apos;s tasks
           </h3>
 
@@ -180,7 +199,9 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-sm bg-orange-500 shadow-sm" />
-                  <span className="text-[10px] font-bold text-gray-700 tracking-wide uppercase">
+                  <span
+                    className={`text-[10px] font-bold tracking-wide uppercase ${isDarkMode ? "text-white" : "text-gray-700"}`}
+                  >
                     New ideas for campaign
                   </span>
                 </div>
@@ -188,7 +209,9 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
                   60%
                 </span>
               </div>
-              <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className={`w-full h-1.5 rounded-full overflow-hidden ${isDarkMode ? "bg-gray-700" : "bg-gray-100"}`}
+              >
                 <div className="bg-blue-400 h-full w-[60%]" />
               </div>
               <span className="text-[10px] font-bold text-gray-400 uppercase">
@@ -200,7 +223,9 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-sm bg-green-500 shadow-sm" />
-                  <span className="text-[10px] font-bold text-gray-700 tracking-wide uppercase">
+                  <span
+                    className={`text-[10px] font-bold tracking-wide uppercase ${isDarkMode ? "text-white" : "text-gray-700"}`}
+                  >
                     Design PPT #4
                   </span>
                 </div>
@@ -208,7 +233,9 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
                   112%
                 </span>
               </div>
-              <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className={`w-full h-1.5 rounded-full overflow-hidden ${isDarkMode ? "bg-gray-700" : "bg-gray-100"}`}
+              >
                 <div className="bg-orange-400 h-full w-full shadow-inner" />
               </div>
               <span className="text-[10px] font-bold text-gray-400 uppercase">
@@ -219,8 +246,12 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
         </div>
 
         {/* Bottom Right: Integrations */}
-        <div className="absolute bottom-[15%] right-[2%] w-72 bg-white/90 backdrop-blur-xl rounded-[2rem] p-6 shadow-2xl border border-white/50 animate-float-side hidden xl:block text-left scale-90">
-          <h3 className="text-sm font-bold text-gray-800 mb-4 uppercase tracking-tight">
+        <div
+          className={`absolute bottom-[15%] right-[2%] w-72 backdrop-blur-xl rounded-[2rem] p-6 shadow-2xl border animate-float-side hidden xl:block text-left scale-90 transition-colors duration-300 ${isDarkMode ? "bg-[#3A506B] border-[#3A506B]" : "bg-white/90 border-white/50"}`}
+        >
+          <h3
+            className={`text-sm font-bold mb-4 uppercase tracking-tight ${isDarkMode ? "text-white" : "text-gray-800"}`}
+          >
             100+ Integrations
           </h3>
           <div className="flex items-center gap-3">

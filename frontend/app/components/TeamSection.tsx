@@ -17,7 +17,7 @@ export function TeamSection({ isDarkMode }: TeamSectionProps) {
         <FadeInOnScroll>
           <div className="flex flex-col items-center text-center mb-24">
             <span
-              className={`font-bold text-sm tracking-wide mb-4 block transition-colors ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}
+              className={`font-bold text-sm tracking-wide mb-4 block transition-colors ${isDarkMode ? "text-[#e63946]" : "text-[#e63946]"}`}
             >
               Hear from our happy clients
             </span>
@@ -62,7 +62,9 @@ export function TeamSection({ isDarkMode }: TeamSectionProps) {
             {/* Card 1: Esther Howard */}
             <FadeInOnScroll delay={100}>
               <div className="flex justify-center rotate-[-6deg] hover:rotate-0 transition-all duration-500 hover:scale-110 z-20">
-                <div className="bg-white p-8 rounded-[2rem] squad-card-shadow border border-gray-50 text-center w-64 card-hover-lift">
+                <div
+                  className={`p-8 rounded-[2rem] squad-card-shadow border text-center w-64 card-hover-lift transition-colors duration-300 ${isDarkMode ? "bg-[#3A506B] border-[#3A506B]" : "bg-white border-gray-50"}`}
+                >
                   <div className="w-24 h-24 mx-auto mb-6 bg-purple-100 rounded-full flex items-center justify-center p-1 border-4 border-white shadow-sm overflow-hidden relative">
                     <Image
                       src="/team/esther.png"
@@ -71,14 +73,19 @@ export function TeamSection({ isDarkMode }: TeamSectionProps) {
                       className="object-cover"
                     />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">
+                  <h3
+                    className={`text-xl font-bold mb-1 transition-colors ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                  >
                     Kaneza Amandine
                   </h3>
                   <p className="text-xs font-bold text-[#e63946] uppercase tracking-widest mb-3">
                     Designer
                   </p>
-                  <p className="text-xs text-gray-500 italic leading-relaxed">
-                    This project is truly spectacular, this team deserves all the awards
+                  <p
+                    className={`text-xs italic leading-relaxed transition-colors ${isDarkMode ? "text-white/80" : "text-gray-500"}`}
+                  >
+                    This project is truly spectacular, this team deserves all
+                    the awards
                   </p>
                 </div>
               </div>
@@ -87,7 +94,9 @@ export function TeamSection({ isDarkMode }: TeamSectionProps) {
             {/* Card 2: Annette Black */}
             <FadeInOnScroll delay={200}>
               <div className="flex justify-center rotate-[-2deg] md:mt-12 hover:rotate-0 transition-all duration-500 hover:scale-110 z-30">
-                <div className="bg-white p-8 rounded-[2rem] squad-card-shadow border border-gray-50 text-center w-64 card-hover-lift">
+                <div
+                  className={`p-8 rounded-[2rem] squad-card-shadow border text-center w-64 card-hover-lift transition-colors duration-300 ${isDarkMode ? "bg-[#3A506B] border-[#3A506B]" : "bg-white border-gray-50"}`}
+                >
                   <div className="w-24 h-24 mx-auto mb-6 bg-pink-100 rounded-full flex items-center justify-center p-1 border-4 border-white shadow-sm overflow-hidden relative">
                     <Image
                       src="/team/annette.png"
@@ -96,14 +105,19 @@ export function TeamSection({ isDarkMode }: TeamSectionProps) {
                       className="object-cover"
                     />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">
+                  <h3
+                    className={`text-xl font-bold mb-1 transition-colors ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                  >
                     Ntwali Yanis
                   </h3>
                   <p className="text-xs font-bold text-[#e63946] uppercase tracking-widest mb-3">
                     Developer
                   </p>
-                  <p className="text-xs text-gray-500 italic leading-relaxed">
-                    This solution is truly amazing, if this team doesn't win the hackathon, I don't know who will
+                  <p
+                    className={`text-xs italic leading-relaxed transition-colors ${isDarkMode ? "text-white/80" : "text-gray-500"}`}
+                  >
+                    This solution is truly amazing, if this team doesn&apos;t
+                    win the hackathon, I don&apos;t know who will
                   </p>
                 </div>
               </div>
@@ -112,7 +126,9 @@ export function TeamSection({ isDarkMode }: TeamSectionProps) {
             {/* Card 3: Arlene McCoy */}
             <FadeInOnScroll delay={300}>
               <div className="flex justify-center rotate-[4deg] hover:rotate-0 transition-all duration-500 hover:scale-110 z-20">
-                <div className="bg-white p-8 rounded-[2rem] squad-card-shadow border border-gray-50 text-center w-64 card-hover-lift">
+                <div
+                  className={`p-8 rounded-[2rem] squad-card-shadow border text-center w-64 card-hover-lift transition-colors duration-300 ${isDarkMode ? "bg-[#3A506B] border-[#3A506B]" : "bg-white border-gray-50"}`}
+                >
                   <div className="w-24 h-24 mx-auto mb-6 bg-blue-100 rounded-full flex items-center justify-center p-1 border-4 border-white shadow-sm overflow-hidden relative">
                     <Image
                       src="/team/arlene.png"
@@ -121,14 +137,20 @@ export function TeamSection({ isDarkMode }: TeamSectionProps) {
                       className="object-cover"
                     />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">
+                  <h3
+                    className={`text-xl font-bold mb-1 transition-colors ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                  >
                     Arlene Ishimwe
                   </h3>
                   <p className="text-xs font-bold text-[#e63946] uppercase tracking-widest mb-3">
                     SEO Ex.
                   </p>
-                  <p className="text-xs text-gray-500 italic leading-relaxed">
-                    I loved their product, They are truly creative! Wish the best for them. Their project was soo much efficient! and better than ours
+                  <p
+                    className={`text-xs italic leading-relaxed transition-colors ${isDarkMode ? "text-white/80" : "text-gray-500"}`}
+                  >
+                    I loved their product, They are truly creative! Wish the
+                    best for them. Their project was soo much efficient! and
+                    better than ours
                   </p>
                 </div>
               </div>
@@ -137,21 +159,31 @@ export function TeamSection({ isDarkMode }: TeamSectionProps) {
             {/* Card 4: Special Card */}
             <FadeInOnScroll delay={400}>
               <div className="flex justify-center rotate-[8deg] md:mt-8 hover:rotate-0 transition-all duration-500 hover:scale-110 z-10">
-                <div className="bg-white p-8 rounded-[2rem] squad-card-shadow border border-gray-50 text-left w-64 relative overflow-hidden group card-hover-lift">
+                <div
+                  className={`p-8 rounded-[2rem] squad-card-shadow border text-left w-64 relative overflow-hidden group card-hover-lift transition-colors duration-300 ${isDarkMode ? "bg-[#3A506B] border-[#3A506B]" : "bg-white border-gray-50"}`}
+                >
                   <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <Zap className="w-20 h-20 text-blue-600" />
+                    <Zap
+                      className={`w-20 h-20 transition-colors ${isDarkMode ? "text-white" : "text-blue-600"}`}
+                    />
                   </div>
-                  <p className="text-[10px] font-bold text-[#1C2541] uppercase tracking-widest mb-2">
+                  <p
+                    className={`text-[10px] font-bold uppercase tracking-widest mb-2 transition-colors ${isDarkMode ? "text-white" : "text-[#1C2541]"}`}
+                  >
                     Dream
                   </p>
-                  <h4 className="text-xl font-bold text-gray-900 mb-1">
+                  <h4
+                    className={`text-xl font-bold mb-1 transition-colors ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                  >
                     Beginning
                   </h4>
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">
                     — Intelligence
                   </p>
                   <div className="flex gap-3">
-                    <div className="w-2 h-2 rounded-full bg-[#1C2541] animate-pulse-soft" />
+                    <div
+                      className={`w-2 h-2 rounded-full animate-pulse-soft ${isDarkMode ? "bg-white" : "bg-[#1C2541]"}`}
+                    />
                     <div className="w-2 h-2 rounded-full bg-pink-400 animate-pulse-soft stagger-1" />
                     <div className="w-2 h-2 rounded-full bg-orange-400 animate-pulse-soft stagger-2" />
                   </div>

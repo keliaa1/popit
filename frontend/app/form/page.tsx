@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, Suspense } from "react";
+import { useState, useRef, Suspense, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   User,
   MessageSquare,
@@ -16,7 +16,10 @@ import {
   MapPin,
   Award,
   Users,
+  ChevronDown,
 } from "lucide-react";
+import { useTheme } from "../hooks/useTheme";
+import { TEMPLATES } from "../data/templates";
 
 type Step = {
   category: string;
@@ -147,6 +150,7 @@ const TEMPLATE_CONFIGS: Record<string, { title: string; steps: Step[] }> = {
 
 function FormContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const templateId = searchParams.get("template") || "birthday";
   const config = TEMPLATE_CONFIGS[templateId] || TEMPLATE_CONFIGS.birthday;
   const steps = config.steps;
@@ -157,7 +161,19 @@ function FormContent() {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { isDarkMode, mounted } = useTheme();
+
+  // Reset form when template changes
+  useEffect(() => {
+    setCurrentStep(1);
+    setFormData({});
+    setPdfUrl(null);
+  }, [templateId]);
+
+  if (!mounted) return <div className="min-h-screen bg-white" />;
 
   const percentage = Math.round((currentStep / TOTAL_STEPS) * 100);
   const radius = 70;
@@ -220,16 +236,25 @@ function FormContent() {
     }
   };
 
+  const handleTemplateChange = (id: string) => {
+    setIsDropdownOpen(false);
+    router.push(`/form?template=${id}`);
+  };
+
   const currentStepData = steps[currentStep - 1];
 
   return (
-    <div className="flex min-h-screen bg-black font-sans text-gray-900 overflow-hidden">
+    <div
+      className={`flex min-h-screen font-sans overflow-hidden transition-colors duration-300 ${isDarkMode ? "bg-[#0d1117] text-white" : "bg-white text-gray-900"}`}
+    >
       {/* Sidebar - Hidden on small/medium screens */}
-      <aside className="hidden lg:flex w-80 border-r border-gray-100 flex-col p-10 bg-[#fafafa] z-20">
+      <aside
+        className={`hidden lg:flex w-80 border-r flex-col p-10 z-20 ${isDarkMode ? "bg-[#161b22] border-gray-800" : "bg-[#fafafa] border-gray-100"}`}
+      >
         <div className="mb-16">
           <Link
             href="/"
-            className="text-3xl font-bold text-[#1C2541] tracking-tight"
+            className={`text-3xl font-bold tracking-tight ${isDarkMode ? "text-white" : "text-[#1C2541]"}`}
           >
             imenapop
           </Link>
@@ -243,7 +268,7 @@ function FormContent() {
                 cx="80"
                 cy="80"
                 r={radius}
-                stroke="#f1f3f5"
+                stroke={isDarkMode ? "#30363d" : "#f1f3f5"}
                 strokeWidth="8"
                 fill="none"
               />
@@ -251,7 +276,7 @@ function FormContent() {
                 cx="80"
                 cy="80"
                 r={radius}
-                stroke="#3A506B"
+                stroke={isDarkMode ? "#58a6ff" : "#3A506B"}
                 strokeWidth="8"
                 fill="none"
                 strokeDasharray={circumference}
@@ -264,11 +289,19 @@ function FormContent() {
               />
             </svg>
             <div className="text-center z-10">
-              <div className="text-4xl font-bold text-gray-800">
+              <div
+                className={`text-4xl font-bold ${isDarkMode ? "text-white" : "text-gray-800"}`}
+              >
                 {percentage}{" "}
-                <span className="text-xl font-medium text-gray-400">%</span>
+                <span
+                  className={`text-xl font-medium ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}
+                >
+                  %
+                </span>
               </div>
-              <div className="text-sm font-bold text-gray-300 mt-1 uppercase tracking-widest">
+              <div
+                className={`text-sm font-bold mt-1 uppercase tracking-widest ${isDarkMode ? "text-gray-500" : "text-gray-300"}`}
+              >
                 {currentStep}/{TOTAL_STEPS}
               </div>
             </div>
@@ -283,39 +316,54 @@ function FormContent() {
               active={currentStep === idx + 1}
               icon={step.icon}
               label={step.field.charAt(0).toUpperCase() + step.field.slice(1)}
+              isDarkMode={isDarkMode}
             />
           ))}
         </nav>
 
         <div className="mt-auto pt-10 text-center">
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-4 flex items-center justify-center">
-            <Lock className="w-5 h-5 text-gray-200" />
+          <div
+            className={`rounded-2xl p-6 shadow-sm border mb-4 flex items-center justify-center ${isDarkMode ? "bg-[#0d1117] border-gray-800" : "bg-white border-gray-100"}`}
+          >
+            <Lock
+              className={`w-5 h-5 ${isDarkMode ? "text-gray-600" : "text-gray-200"}`}
+            />
           </div>
-          <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest leading-loose">
+          <p
+            className={`text-[10px] font-bold uppercase tracking-widest leading-loose ${isDarkMode ? "text-gray-500" : "text-gray-300"}`}
+          >
             SECURE PDF GENERATION
           </p>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col relative bg-white">
+      <main
+        className={`flex-1 flex flex-col relative ${isDarkMode ? "bg-[#0d1117]" : "bg-white"}`}
+      >
         {/* Mobile Header & Progress (Visible only on small/medium screens) */}
-        <div className="lg:hidden px-6 py-6 border-b border-gray-100 bg-white">
+        <div
+          className={`lg:hidden px-6 py-6 border-b ${isDarkMode ? "bg-[#161b22] border-gray-800" : "bg-white border-gray-100"}`}
+        >
           <div className="flex items-center justify-between mb-6">
             <Link
               href="/"
-              className="text-2xl font-bold text-[#1C2541] tracking-tight"
+              className={`text-2xl font-bold tracking-tight ${isDarkMode ? "text-white" : "text-[#1C2541]"}`}
             >
               imenapop
             </Link>
-            <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+            <div
+              className={`text-xs font-bold uppercase tracking-widest ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}
+            >
               Step {currentStep}/{TOTAL_STEPS}
             </div>
           </div>
           {/* Mobile Linear Progress */}
-          <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div
+            className={`w-full h-2 rounded-full overflow-hidden ${isDarkMode ? "bg-[#30363d]" : "bg-gray-100"}`}
+          >
             <div
-              className="h-full bg-[#3A506B] transition-all duration-500 ease-out"
+              className={`h-full transition-all duration-500 ease-out ${isDarkMode ? "bg-[#58a6ff]" : "bg-[#3A506B]"}`}
               style={{ width: `${percentage}%` }}
             />
           </div>
@@ -323,33 +371,96 @@ function FormContent() {
 
         <header className="hidden lg:flex items-center justify-between px-16 py-8 relative z-10">
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-gray-400 font-medium">
+            <span
+              className={`font-medium ${isDarkMode ? "text-gray-400" : "text-gray-400"}`}
+            >
               Selected Template:
             </span>
-            <span className="text-[#1C2541] font-bold uppercase tracking-wider">
+            <span
+              className={`font-bold uppercase tracking-wider ${isDarkMode ? "text-white" : "text-[#1C2541]"}`}
+            >
               {config.title}
             </span>
-            <Info className="w-4 h-4 text-gray-300 ml-1" />
+            <Info
+              className={`w-4 h-4 ml-1 ${isDarkMode ? "text-gray-500" : "text-gray-300"}`}
+            />
           </div>
-          <Link
-            href="/"
-            className="px-8 py-3 bg-white border border-gray-100 shadow-sm rounded-xl text-xs font-bold text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-widest"
-          >
-            Change Template
-          </Link>
+
+          {/* Template Switcher Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className={`flex items-center gap-2 px-8 py-3 border shadow-sm rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${
+                isDarkMode
+                  ? "bg-[#161b22] border-gray-800 text-gray-300 hover:text-white"
+                  : "bg-white border-gray-100 text-gray-400 hover:text-gray-900"
+              }`}
+            >
+              Change Template
+              <ChevronDown
+                className={`w-4 h-4 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {isDropdownOpen && (
+              <div
+                className={`absolute right-0 top-full mt-2 w-64 rounded-xl shadow-xl border overflow-hidden z-50 ${
+                  isDarkMode
+                    ? "bg-[#161b22] border-gray-800"
+                    : "bg-white border-gray-100"
+                }`}
+              >
+                {TEMPLATES.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => handleTemplateChange(t.id)}
+                    className={`w-full text-left px-5 py-3 text-sm font-medium transition-colors flex items-center justify-between ${
+                      templateId === t.id
+                        ? isDarkMode
+                          ? "bg-[#1f242d] text-white"
+                          : "bg-gray-50 text-[#1C2541]"
+                        : isDarkMode
+                          ? "text-gray-400 hover:bg-[#1f242d] hover:text-white"
+                          : "text-gray-500 hover:bg-gray-50 hover:text-[#1C2541]"
+                    }`}
+                  >
+                    {t.title}
+                    {templateId === t.id && (
+                      <div
+                        className={`w-2 h-2 rounded-full ${isDarkMode ? "bg-[#58a6ff]" : "bg-[#3A506B]"}`}
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+            {/* Backdrop to close dropdown */}
+            {isDropdownOpen && (
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setIsDropdownOpen(false)}
+              />
+            )}
+          </div>
         </header>
 
         <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-16">
           <div
             className={`max-w-xl w-full text-center mb-10 lg:mb-16 transition-all duration-500 ${isAnimating ? "opacity-0 -translate-y-4" : "opacity-100 translate-y-0"}`}
           >
-            <span className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.3em] mb-4 block">
+            <span
+              className={`text-[10px] font-bold uppercase tracking-[0.3em] mb-4 block ${isDarkMode ? "text-gray-500" : "text-gray-300"}`}
+            >
               {currentStepData.category} — Step {currentStep}
             </span>
-            <h1 className="text-3xl lg:text-5xl font-bold text-gray-800 tracking-tight leading-tight mb-4">
+            <h1
+              className={`text-3xl lg:text-5xl font-bold tracking-tight leading-tight mb-4 ${isDarkMode ? "text-white" : "text-gray-800"}`}
+            >
               {currentStepData.question}
             </h1>
-            <p className="text-gray-400 font-medium text-sm lg:text-base">
+            <p
+              className={`font-medium text-sm lg:text-base ${isDarkMode ? "text-gray-400" : "text-gray-400"}`}
+            >
               {currentStepData.instruction}
             </p>
           </div>
@@ -365,7 +476,11 @@ function FormContent() {
                 value={formData[currentStepData.field] || ""}
                 onChange={handleInputChange}
                 placeholder={currentStepData.placeholder}
-                className="w-full bg-transparent border-b-2 border-gray-100 py-4 lg:py-6 text-2xl lg:text-3xl font-medium outline-none placeholder:text-gray-200 focus:border-[#1C2541] transition-colors"
+                className={`w-full bg-transparent border-b-2 py-4 lg:py-6 text-2xl lg:text-3xl font-medium outline-none transition-colors ${
+                  isDarkMode
+                    ? "border-gray-800 placeholder:text-gray-700 focus:border-[#58a6ff] text-white"
+                    : "border-gray-100 placeholder:text-gray-200 focus:border-[#1C2541] text-gray-900"
+                }`}
                 autoFocus
               />
             )}
@@ -376,14 +491,22 @@ function FormContent() {
                 onChange={handleInputChange}
                 placeholder={currentStepData.placeholder}
                 rows={3}
-                className="w-full bg-transparent border-b-2 border-gray-100 py-4 lg:py-6 text-xl lg:text-2xl font-medium outline-none placeholder:text-gray-200 focus:border-[#1C2541] transition-colors resize-none"
+                className={`w-full bg-transparent border-b-2 py-4 lg:py-6 text-xl lg:text-2xl font-medium outline-none resize-none transition-colors ${
+                  isDarkMode
+                    ? "border-gray-800 placeholder:text-gray-700 focus:border-[#58a6ff] text-white"
+                    : "border-gray-100 placeholder:text-gray-200 focus:border-[#1C2541] text-gray-900"
+                }`}
                 autoFocus
               />
             )}
             {currentStepData.type === "file" && (
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full aspect-video border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:border-[#1C2541] hover:bg-blue-50/30 transition-all group overflow-hidden"
+                className={`w-full aspect-video border-2 border-dashed rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all group overflow-hidden ${
+                  isDarkMode
+                    ? "border-gray-800 hover:border-[#58a6ff] hover:bg-[#161b22]"
+                    : "border-gray-200 hover:border-[#1C2541] hover:bg-blue-50/30"
+                }`}
               >
                 {formData.image ? (
                   <img
@@ -393,8 +516,18 @@ function FormContent() {
                   />
                 ) : (
                   <>
-                    <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                      <ImageIcon className="w-8 h-8 text-gray-300 group-hover:text-[#3A506B] transition-colors" />
+                    <div
+                      className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform ${
+                        isDarkMode ? "bg-[#161b22]" : "bg-gray-50"
+                      }`}
+                    >
+                      <ImageIcon
+                        className={`w-8 h-8 transition-colors ${
+                          isDarkMode
+                            ? "text-gray-600 group-hover:text-[#58a6ff]"
+                            : "text-gray-300 group-hover:text-[#3A506B]"
+                        }`}
+                      />
                     </div>
                     <span className="text-gray-400 font-bold uppercase tracking-widest text-xs">
                       Click to upload photo
@@ -415,16 +548,28 @@ function FormContent() {
           <div className="w-full max-w-2xl flex justify-center flex-col items-center gap-8">
             {pdfUrl ? (
               <div className="flex flex-col items-center gap-6 animate-fade-in text-center">
-                <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mb-2">
+                <div
+                  className={`w-20 h-20 rounded-full flex items-center justify-center mb-2 ${
+                    isDarkMode
+                      ? "bg-green-900/30 text-green-400"
+                      : "bg-green-50 text-green-500"
+                  }`}
+                >
                   <Download className="w-10 h-10" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-800">
+                <h2
+                  className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-800"}`}
+                >
                   Your PDF is ready!
                 </h2>
                 <a
                   href={pdfUrl}
                   download={`${templateId}-invitation.pdf`}
-                  className="flex items-center gap-4 px-12 py-5 bg-[#1C2541] rounded-xl text-white font-bold uppercase tracking-widest shadow-xl hover:scale-105 transition-all"
+                  className={`flex items-center gap-4 px-12 py-5 rounded-xl text-white font-bold uppercase tracking-widest shadow-xl hover:scale-105 transition-all ${
+                    isDarkMode
+                      ? "bg-[#58a6ff] hover:bg-[#4a8ecc]"
+                      : "bg-[#1C2541]"
+                  }`}
                 >
                   Download Invitation
                 </a>
@@ -436,7 +581,9 @@ function FormContent() {
                 className={`flex items-center gap-4 px-12 py-5 rounded-xl text-white font-bold uppercase tracking-widest transition-all ${
                   isGenerating
                     ? "bg-gray-200 cursor-not-allowed"
-                    : "bg-[#1C2541] hover:shadow-xl hover:scale-105 active:scale-95"
+                    : isDarkMode
+                      ? "bg-[#238636] hover:bg-[#2ea043] hover:shadow-xl hover:scale-105 active:scale-95"
+                      : "bg-[#1C2541] hover:shadow-xl hover:scale-105 active:scale-95"
                 }`}
               >
                 {isGenerating ? (
@@ -465,22 +612,40 @@ function NavItem({
   active,
   icon,
   label,
+  isDarkMode,
 }: {
   active: boolean;
   icon: React.ReactNode;
   label: string;
+  isDarkMode: boolean;
 }) {
   return (
     <div
       className={`flex items-center gap-4 transition-all duration-500 ${active ? "opacity-100 translate-x-2" : "opacity-40"}`}
     >
       <div
-        className={`w-10 h-10 rounded-xl bg-white shadow-sm border border-gray-100 flex items-center justify-center ${active ? "text-[#3A506B] border-blue-100" : "text-gray-400"}`}
+        className={`w-10 h-10 rounded-xl shadow-sm border flex items-center justify-center ${
+          active
+            ? isDarkMode
+              ? "text-[#58a6ff] border-[#1f242d] bg-[#161b22]"
+              : "text-[#3A506B] border-blue-100 bg-white"
+            : isDarkMode
+              ? "text-gray-600 border-gray-800 bg-[#161b22]"
+              : "text-gray-400 border-gray-100 bg-white"
+        }`}
       >
         {icon}
       </div>
       <span
-        className={`font-bold tracking-wide ${active ? "text-[#3A506B]" : "text-gray-400"}`}
+        className={`font-bold tracking-wide ${
+          active
+            ? isDarkMode
+              ? "text-[#58a6ff]"
+              : "text-[#3A506B]"
+            : isDarkMode
+              ? "text-gray-600"
+              : "text-gray-400"
+        }`}
       >
         {label}
       </span>

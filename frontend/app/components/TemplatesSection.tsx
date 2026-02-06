@@ -5,6 +5,13 @@ import Link from "next/link";
 import { Zap } from "lucide-react";
 import { FadeInOnScroll } from "./AnimationComponents";
 
+import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectCoverflow, Pagination, Autoplay } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
+
 interface Template {
   id: string;
   title: string;
@@ -78,163 +85,112 @@ export function TemplatesSection({
           </div>
         </FadeInOnScroll>
 
-        <div className="perspective-1000 w-full overflow-hidden py-10">
-          <div className="carousel-container preserve-3d">
-            <div className="flex flex-col sm:flex-row gap-8 sm:gap-12 px-6 justify-center preserve-3d">
-              {templates.map((template, idx) => (
+        <div className="w-full py-10">
+          <Swiper
+            effect={"coverflow"}
+            grabCursor={true}
+            centeredSlides={true}
+            slidesPerView={"auto"}
+            coverflowEffect={{
+              rotate: 50,
+              stretch: 0,
+              depth: 100,
+              modifier: 1,
+              slideShadows: true,
+            }}
+            pagination={{ clickable: true }}
+            autoplay={{
+              delay: 1500,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            loop={true}
+            modules={[EffectCoverflow, Pagination, Autoplay]}
+            className="mySwiper !pb-14"
+            style={{
+              // @ts-expect-error - CSS variables are not typed in React.CSSProperties
+              "--swiper-pagination-color": "#1C2541",
+              "--swiper-pagination-bullet-inactive-color": "#999",
+            }}
+          >
+            {[
+              ...templates,
+              ...templates,
+              ...templates,
+              ...templates,
+              ...templates,
+              ...templates,
+            ].map((template, idx) => (
+              <SwiperSlide
+                key={idx}
+                className="!w-[300px] !h-[450px] sm:!w-[350px] sm:!h-[500px]"
+              >
                 <div
-                  key={idx}
-                  className={`carousel-item relative w-64 md:w-80 aspect-[3/4] group ${idx === 0 ? "tilt-left-1" : idx === 1 ? "tilt-center" : "tilt-right-1"}`}
+                  className={`relative w-full h-full group overflow-hidden rounded-[2rem] border-[6px] shadow-2xl transition-all duration-300 ${isDarkMode ? "bg-[#1C2541] border-[#3A506B]" : "bg-white border-white"}`}
                 >
-                  {template.id === "kwibuka" ? (
-                    <div className="absolute inset-0 bg-white overflow-hidden">
-                      <Image
-                        src="/kwibuka-bg.jpeg"
-                        alt="Background"
-                        fill
-                        className="object-cover opacity-100"
+                  <Image
+                    src={template.image}
+                    alt={template.title}
+                    fill
+                    className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
+                  />
+                  {/* Expandable Bottom Sheet */}
+                  <div
+                    className={`absolute bottom-0 left-0 right-0 rounded-tr-[3rem] px-6 py-5 transform translate-y-[calc(100%-88px)] group-hover:translate-y-0 transition-all duration-500 cubic-bezier(0.23,1,0.32,1) flex flex-col gap-4 shadow-xl ${isDarkMode ? "bg-[#1C2541]" : "bg-white"}`}
+                  >
+                    {/* Always Visible Header */}
+                    <div className="flex flex-col items-start text-left">
+                      <h3
+                        className={`text-xl font-bold tracking-tight uppercase transition-colors ${isDarkMode ? "text-white" : "text-[#1C2541]"}`}
+                      >
+                        {template.title}
+                      </h3>
+                      <p
+                        className={`text-[10px] font-bold uppercase tracking-widest mt-1 transition-colors ${isDarkMode ? "text-gray-400" : "text-gray-400"}`}
+                      >
+                        {template.category}
+                      </p>
+                    </div>
+
+                    {/* Hidden Content (Reveals on hover) */}
+                    <div className="flex flex-col gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                      <div
+                        className={`w-full h-[1px] ${isDarkMode ? "bg-white/10" : "bg-gray-100"}`}
                       />
-                      <div className="absolute inset-0 flex items-center justify-center p-6">
-                        <div className="bg-white/95 w-full h-[85%] rounded-lg flex flex-col items-center p-6 text-[#6d645f] shadow-2xl">
-                          <Image
-                            src="/kwibuka.png"
-                            alt="Logo"
-                            width={40}
-                            height={40}
-                            className="mb-4"
+                      <p
+                        className={`text-xs leading-relaxed line-clamp-2 transition-colors ${isDarkMode ? "text-white/80" : "text-gray-500"}`}
+                      >
+                        Create a stunning {template.title.toLowerCase()}{" "}
+                        invitation in seconds. Fully customizable and ready to
+                        share.
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <div
+                          className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider transition-colors ${isDarkMode ? "text-white/60" : "text-[#1C2541]/60"}`}
+                        >
+                          <Zap
+                            className={`w-3 h-3 ${isDarkMode ? "text-white" : "text-[#3A506B]"}`}
                           />
-                          <div className="text-[10px] uppercase tracking-widest opacity-80 mb-2 font-serif">
-                            Commemoration
-                          </div>
-                          <div className="text-3xl font-extrabold leading-none text-center">
-                            KWIBUKA
-                            <br />
-                            31
-                          </div>
-                          <div className="flex items-center w-full gap-2 my-4">
-                            <div className="h-[1px] bg-[#6d645f]/30 flex-1" />
-                            <div className="text-sm italic font-serif">
-                              with
-                            </div>
-                            <div className="h-[1px] bg-[#6d645f]/30 flex-1" />
-                          </div>
-                          <div className="text-lg font-bold border-b border-[#6d645f]/30 pb-1 mb-4 whitespace-nowrap">
-                            Imena Family
-                          </div>
-                          <div className="text-sm font-medium">
-                            30 / 09 / 2023
-                          </div>
-                          <div className="w-16 h-[1px] bg-[#6d645f]/40 my-4" />
-                          <div className="text-[10px] font-serif leading-tight">
-                            Nyabihu Genocide
-                            <br />
-                            Memorial
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ) : template.id === "event" ? (
-                    <div className="absolute inset-0 bg-white overflow-hidden flex flex-col items-center p-0 text-center">
-                      {/* Textured Beige Background */}
-                      <div className="absolute inset-0 bg-[#f4e8e0] opacity-100 z-0">
-                        <Image
-                          src="/event/beige-backgorund.png"
-                          alt="Background"
-                          fill
-                          className="object-cover opacity-30"
-                        />
-                      </div>
-
-                      {/* Arched Card */}
-                      <div className="relative mt-12 w-[85%] h-[80%] bg-white rounded-t-full shadow-lg z-10 flex flex-col items-center p-6 pt-6">
-                        <Image
-                          src="/event/imenalogo2.png"
-                          alt="Logo"
-                          width={100}
-                          height={100}
-                          className="mb-2"
-                        />
-                        <div className="text-2xl font-serif italic mb-2 leading-tight text-[#5d707c]">
-                          Saturday
-                          <br />
-                          Meetup
-                        </div>
-                        <div className="text-[9px] uppercase tracking-widest mb-4 text-[#5d707c]">
-                          HOSTED BY WIHOGORA
-                        </div>
-
-                        <div className="flex items-center w-full gap-2 mb-4">
-                          <div className="flex flex-col flex-1 items-center">
-                            <div className="h-[1px] bg-[#5d707c]/40 w-full" />
-                            <div className="text-[7px] uppercase tracking-widest text-[#5d707c]">
-                              September
-                            </div>
-                            <div className="h-[1px] bg-[#5d707c]/40 w-full" />
-                          </div>
-                          <div className="text-3xl font-serif italic text-[#5d707c]">
-                            16
-                          </div>
-                          <div className="flex flex-col flex-1 items-center">
-                            <div className="h-[1px] bg-[#5d707c]/40 w-full" />
-                            <div className="text-[7px] uppercase tracking-widest text-[#5d707c]">
-                              2026
-                            </div>
-                            <div className="h-[1px] bg-[#5d707c]/40 w-full" />
-                          </div>
-                        </div>
-
-                        <div className="text-[9px] mb-2 text-[#5d707c]">
-                          Don&apos;t miss out
-                        </div>
-                        <div className="text-[10px] font-medium text-[#5d707c]">
-                          Rwanda Coding Academy
-                        </div>
-                        <div className="text-[7px] italic opacity-60 text-[#5d707c]">
-                          A courtesy of Imena family
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <Image
-                        src={template.image}
-                        alt={template.title}
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-10 flex flex-col justify-end text-left items-start">
-                        <h3 className="text-white text-3xl font-bold mb-1 tracking-tight">
-                          {template.title}
-                        </h3>
-                        <p className="text-white/60 text-sm font-medium mb-8">
-                          {template.category}
-                        </p>
-                        <div className="flex items-center gap-4 text-white/40 text-[10px] font-bold uppercase tracking-[0.2em] w-full">
-                          <Zap className="w-3 h-3" />
                           <span>{template.code}</span>
-                          <span className="ml-auto text-white">
-                            {template.price}
-                          </span>
                         </div>
+                        <span
+                          className={`font-bold text-sm transition-colors ${isDarkMode ? "text-white" : "text-[#1C2541]"}`}
+                        >
+                          {template.price}
+                        </span>
                       </div>
-                    </>
-                  )}
-                  <div className="card-drawer">
-                    <div className="w-12 h-1 bg-gray-100 rounded-full mb-2" />
-                    <Link
-                      href={`/form?template=${template.id}`}
-                      className="drawer-button"
-                    >
-                      Try Template
-                    </Link>
-                    <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">
-                      Fast Generation
-                    </p>
+                      <Link
+                        href={`/form?template=${template.id}`}
+                        className={`w-full py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-center transition-colors ${isDarkMode ? "bg-white text-[#1C2541] hover:bg-gray-200" : "bg-[#1C2541] text-white hover:bg-[#3A506B]"}`}
+                      >
+                        Try Template
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
       </div>
     </section>

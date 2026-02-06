@@ -10,32 +10,7 @@ import {
 } from "./components";
 
 // Template data
-const TEMPLATES = [
-  {
-    id: "birthday",
-    title: "Birthday Template",
-    category: "Personalize",
-    price: "Free",
-    code: "BDAY",
-    image: "/cards/image1.jpg",
-  },
-  {
-    id: "kwibuka",
-    title: "Kwibuka Template",
-    category: "Commemorate",
-    price: "Free",
-    code: "KWBK",
-    image: "/cards/image2.jpg",
-  },
-  {
-    id: "event",
-    title: "Event Template",
-    category: "Celebrate",
-    price: "Free",
-    code: "EVNT",
-    image: "/cards/image3.jpg",
-  },
-];
+import { TEMPLATES } from "./data/templates";
 
 export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -58,16 +33,24 @@ export default function Home() {
       className={`flex flex-col min-h-screen transition-colors duration-300 ${isDarkMode ? "bg-[#fff]" : "bg-[#f8f8f8]"}`}
     >
       {/* Hero Section */}
-      <HeroSection isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+      <div id="home">
+        <HeroSection isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+      </div>
 
       {/* About Section */}
-      <AboutSection />
+      <div id="about">
+        <AboutSection />
+      </div>
 
-      {/* Team Section */}
-      <TeamSection isDarkMode={isDarkMode} />
+      {/* Team Section (Testimonials) */}
+      <div id="testimonials">
+        <TeamSection isDarkMode={isDarkMode} />
+      </div>
 
       {/* Templates Section */}
-      <TemplatesSection isDarkMode={isDarkMode} templates={TEMPLATES} />
+      <div id="templates">
+        <TemplatesSection isDarkMode={isDarkMode} templates={TEMPLATES} />
+      </div>
 
       {/* Footer Section */}
       <FooterSection />
