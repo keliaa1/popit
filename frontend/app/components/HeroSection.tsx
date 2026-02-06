@@ -130,8 +130,8 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
         <div className="absolute top-[10%] left-[2%] w-48 h-48 bg-yellow-100 p-6 shadow-2xl -rotate-3 animate-float-side z-0 hidden lg:block text-left border-t-4 border-yellow-200">
           <Pin className="absolute top-2 right-2 w-5 h-5 text-red-500 rotate-12" />
           <p className="text-xs font-mono text-gray-800 leading-relaxed uppercase">
-            Take notes to keep track of crucial details, and accomplish more
-            tasks with ease.
+            ImenaPop helps you create professional PDFs effortlessly, turning
+            your data into polished documents.
           </p>
         </div>
 
@@ -150,7 +150,7 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
             <span
               className={`text-sm font-bold uppercase tracking-tight ${isDarkMode ? "text-white" : "text-gray-800"}`}
             >
-              Reminders
+              Smart Docs. Zero Stress.
             </span>
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center shadow-inner border ${isDarkMode ? "bg-white/10 border-white/10" : "bg-gray-50 border-gray-100"}`}
@@ -191,7 +191,7 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
           <h3
             className={`text-sm font-bold mb-4 uppercase tracking-tight ${isDarkMode ? "text-white" : "text-gray-800"}`}
           >
-            Today&apos;s tasks
+           Smart Documents. Simplified.
           </h3>
 
           <div className="space-y-4">
@@ -202,7 +202,7 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
                   <span
                     className={`text-[10px] font-bold tracking-wide uppercase ${isDarkMode ? "text-white" : "text-gray-700"}`}
                   >
-                    New ideas for campaign
+                    Efficiency
                   </span>
                 </div>
                 <span className="text-[10px] font-bold text-gray-400 uppercase">
@@ -226,7 +226,7 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
                   <span
                     className={`text-[10px] font-bold tracking-wide uppercase ${isDarkMode ? "text-white" : "text-gray-700"}`}
                   >
-                    Design PPT #4
+                    Ready-to-use
                   </span>
                 </div>
                 <span className="text-[10px] font-bold text-gray-400 uppercase">
@@ -252,7 +252,7 @@ export function HeroSection({ isDarkMode, toggleDarkMode }: HeroSectionProps) {
           <h3
             className={`text-sm font-bold mb-4 uppercase tracking-tight ${isDarkMode ? "text-white" : "text-gray-800"}`}
           >
-            100+ Integrations
+           Simply Professional.
           </h3>
           <div className="flex items-center gap-3">
             <div className="w-14 h-14 rounded-2xl bg-white shadow-xl border border-gray-50 flex items-center justify-center hover:scale-110 transition-transform cursor-pointer">

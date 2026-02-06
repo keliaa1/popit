@@ -84,8 +84,7 @@ export function TeamSection({ isDarkMode }: TeamSectionProps) {
                   <p
                     className={`text-xs italic leading-relaxed transition-colors ${isDarkMode ? "text-white/80" : "text-gray-500"}`}
                   >
-                    This project is truly spectacular, this team deserves all
-                    the awards
+                    At the first look of their project, I wanted to get out of the competition! Their project is truly amazing may they win truly.
                   </p>
                 </div>
               </div>
