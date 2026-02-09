@@ -213,21 +213,40 @@ function FormContent() {
   const generatePdf = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch(
-        "https://paper-pop-backend-mruc.onrender.com/generate-pdf",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...formData, templateId }),
+      const response = await fetch("http://localhost:5000/generate-pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ ...formData, templateId }),
+      })
 
       if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        setPdfUrl(url);
+        const data = await response.json();
+        if (data.success && data.pdfBase64) {
+          console.log("PDF Base64 received, length:", data.pdfBase64.length);
+          console.log("PDF Base64 prefix:", data.pdfBase64.substring(0, 50));
+
+          try {
+            // Sanitize and decode
+            const cleanBase64 = data.pdfBase64.replace(/\s/g, "");
+            const binaryString = window.atob(cleanBase64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i);
+            }
+            const blob = new Blob([bytes], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
+            setPdfUrl(url);
+          } catch (atobError) {
+            console.error("atob decoding failed:", atobError);
+            console.log("First 100 chars of base64:", data.pdfBase64.substring(0, 100));
+          }
+        } else {
+          console.error("Failed to generate PDF: Invalid response data");
+        }
       } else {
-        console.error("Failed to generate PDF");
+        console.error("Failed to generate PDF: Server error");
       }
     } catch (error) {
       console.error("Error generating PDF:", error);
@@ -390,11 +409,10 @@ function FormContent() {
           <div className="relative">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className={`flex items-center gap-2 px-8 py-3 border shadow-sm rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${
-                isDarkMode
-                  ? "bg-[#161b22] border-gray-800 text-gray-300 hover:text-white"
-                  : "bg-white border-gray-100 text-gray-400 hover:text-gray-900"
-              }`}
+              className={`flex items-center gap-2 px-8 py-3 border shadow-sm rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${isDarkMode
+                ? "bg-[#161b22] border-gray-800 text-gray-300 hover:text-white"
+                : "bg-white border-gray-100 text-gray-400 hover:text-gray-900"
+                }`}
             >
               Change Template
               <ChevronDown
@@ -404,25 +422,23 @@ function FormContent() {
 
             {isDropdownOpen && (
               <div
-                className={`absolute right-0 top-full mt-2 w-64 rounded-xl shadow-xl border overflow-hidden z-50 ${
-                  isDarkMode
-                    ? "bg-[#161b22] border-gray-800"
-                    : "bg-white border-gray-100"
-                }`}
+                className={`absolute right-0 top-full mt-2 w-64 rounded-xl shadow-xl border overflow-hidden z-50 ${isDarkMode
+                  ? "bg-[#161b22] border-gray-800"
+                  : "bg-white border-gray-100"
+                  }`}
               >
                 {TEMPLATES.map((t) => (
                   <button
                     key={t.id}
                     onClick={() => handleTemplateChange(t.id)}
-                    className={`w-full text-left px-5 py-3 text-sm font-medium transition-colors flex items-center justify-between ${
-                      templateId === t.id
-                        ? isDarkMode
-                          ? "bg-[#1f242d] text-white"
-                          : "bg-gray-50 text-[#1C2541]"
-                        : isDarkMode
-                          ? "text-gray-400 hover:bg-[#1f242d] hover:text-white"
-                          : "text-gray-500 hover:bg-gray-50 hover:text-[#1C2541]"
-                    }`}
+                    className={`w-full text-left px-5 py-3 text-sm font-medium transition-colors flex items-center justify-between ${templateId === t.id
+                      ? isDarkMode
+                        ? "bg-[#1f242d] text-white"
+                        : "bg-gray-50 text-[#1C2541]"
+                      : isDarkMode
+                        ? "text-gray-400 hover:bg-[#1f242d] hover:text-white"
+                        : "text-gray-500 hover:bg-gray-50 hover:text-[#1C2541]"
+                      }`}
                   >
                     {t.title}
                     {templateId === t.id && (
@@ -470,20 +486,19 @@ function FormContent() {
           >
             {(currentStepData.type === "text" ||
               currentStepData.type === "number") && (
-              <input
-                type={currentStepData.type}
-                name={currentStepData.field}
-                value={formData[currentStepData.field] || ""}
-                onChange={handleInputChange}
-                placeholder={currentStepData.placeholder}
-                className={`w-full bg-transparent border-b-2 py-4 lg:py-6 text-2xl lg:text-3xl font-medium outline-none transition-colors ${
-                  isDarkMode
+                <input
+                  type={currentStepData.type}
+                  name={currentStepData.field}
+                  value={formData[currentStepData.field] || ""}
+                  onChange={handleInputChange}
+                  placeholder={currentStepData.placeholder}
+                  className={`w-full bg-transparent border-b-2 py-4 lg:py-6 text-2xl lg:text-3xl font-medium outline-none transition-colors ${isDarkMode
                     ? "border-gray-800 placeholder:text-gray-700 focus:border-[#58a6ff] text-white"
                     : "border-gray-100 placeholder:text-gray-200 focus:border-[#1C2541] text-gray-900"
-                }`}
-                autoFocus
-              />
-            )}
+                    }`}
+                  autoFocus
+                />
+              )}
             {currentStepData.type === "textarea" && (
               <textarea
                 name={currentStepData.field}
@@ -491,22 +506,20 @@ function FormContent() {
                 onChange={handleInputChange}
                 placeholder={currentStepData.placeholder}
                 rows={3}
-                className={`w-full bg-transparent border-b-2 py-4 lg:py-6 text-xl lg:text-2xl font-medium outline-none resize-none transition-colors ${
-                  isDarkMode
-                    ? "border-gray-800 placeholder:text-gray-700 focus:border-[#58a6ff] text-white"
-                    : "border-gray-100 placeholder:text-gray-200 focus:border-[#1C2541] text-gray-900"
-                }`}
+                className={`w-full bg-transparent border-b-2 py-4 lg:py-6 text-xl lg:text-2xl font-medium outline-none resize-none transition-colors ${isDarkMode
+                  ? "border-gray-800 placeholder:text-gray-700 focus:border-[#58a6ff] text-white"
+                  : "border-gray-100 placeholder:text-gray-200 focus:border-[#1C2541] text-gray-900"
+                  }`}
                 autoFocus
               />
             )}
             {currentStepData.type === "file" && (
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className={`w-full aspect-video border-2 border-dashed rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all group overflow-hidden ${
-                  isDarkMode
-                    ? "border-gray-800 hover:border-[#58a6ff] hover:bg-[#161b22]"
-                    : "border-gray-200 hover:border-[#1C2541] hover:bg-blue-50/30"
-                }`}
+                className={`w-full aspect-video border-2 border-dashed rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all group overflow-hidden ${isDarkMode
+                  ? "border-gray-800 hover:border-[#58a6ff] hover:bg-[#161b22]"
+                  : "border-gray-200 hover:border-[#1C2541] hover:bg-blue-50/30"
+                  }`}
               >
                 {formData.image ? (
                   <img
@@ -517,16 +530,14 @@ function FormContent() {
                 ) : (
                   <>
                     <div
-                      className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform ${
-                        isDarkMode ? "bg-[#161b22]" : "bg-gray-50"
-                      }`}
+                      className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform ${isDarkMode ? "bg-[#161b22]" : "bg-gray-50"
+                        }`}
                     >
                       <ImageIcon
-                        className={`w-8 h-8 transition-colors ${
-                          isDarkMode
-                            ? "text-gray-600 group-hover:text-[#58a6ff]"
-                            : "text-gray-300 group-hover:text-[#3A506B]"
-                        }`}
+                        className={`w-8 h-8 transition-colors ${isDarkMode
+                          ? "text-gray-600 group-hover:text-[#58a6ff]"
+                          : "text-gray-300 group-hover:text-[#3A506B]"
+                          }`}
                       />
                     </div>
                     <span className="text-gray-400 font-bold uppercase tracking-widest text-xs">
@@ -549,11 +560,10 @@ function FormContent() {
             {pdfUrl ? (
               <div className="flex flex-col items-center gap-6 animate-fade-in text-center">
                 <div
-                  className={`w-20 h-20 rounded-full flex items-center justify-center mb-2 ${
-                    isDarkMode
-                      ? "bg-green-900/30 text-green-400"
-                      : "bg-green-50 text-green-500"
-                  }`}
+                  className={`w-20 h-20 rounded-full flex items-center justify-center mb-2 ${isDarkMode
+                    ? "bg-green-900/30 text-green-400"
+                    : "bg-green-50 text-green-500"
+                    }`}
                 >
                   <Download className="w-10 h-10" />
                 </div>
@@ -565,11 +575,10 @@ function FormContent() {
                 <a
                   href={pdfUrl}
                   download={`${templateId}-invitation.pdf`}
-                  className={`flex items-center gap-4 px-12 py-5 rounded-xl text-white font-bold uppercase tracking-widest shadow-xl hover:scale-105 transition-all ${
-                    isDarkMode
-                      ? "bg-[#58a6ff] hover:bg-[#4a8ecc]"
-                      : "bg-[#1C2541]"
-                  }`}
+                  className={`flex items-center gap-4 px-12 py-5 rounded-xl text-white font-bold uppercase tracking-widest shadow-xl hover:scale-105 transition-all ${isDarkMode
+                    ? "bg-[#58a6ff] hover:bg-[#4a8ecc]"
+                    : "bg-[#1C2541]"
+                    }`}
                 >
                   Download Invitation
                 </a>
@@ -578,13 +587,12 @@ function FormContent() {
               <button
                 onClick={handleNext}
                 disabled={isGenerating || !formData[currentStepData.field]}
-                className={`flex items-center gap-4 px-12 py-5 rounded-xl text-white font-bold uppercase tracking-widest transition-all ${
-                  isGenerating
-                    ? "bg-gray-200 cursor-not-allowed"
-                    : isDarkMode
-                      ? "bg-[#238636] hover:bg-[#2ea043] hover:shadow-xl hover:scale-105 active:scale-95"
-                      : "bg-[#1C2541] hover:shadow-xl hover:scale-105 active:scale-95"
-                }`}
+                className={`flex items-center gap-4 px-12 py-5 rounded-xl text-white font-bold uppercase tracking-widest transition-all ${isGenerating
+                  ? "bg-gray-200 cursor-not-allowed"
+                  : isDarkMode
+                    ? "bg-[#238636] hover:bg-[#2ea043] hover:shadow-xl hover:scale-105 active:scale-95"
+                    : "bg-[#1C2541] hover:shadow-xl hover:scale-105 active:scale-95"
+                  }`}
               >
                 {isGenerating ? (
                   <>
@@ -624,28 +632,26 @@ function NavItem({
       className={`flex items-center gap-4 transition-all duration-500 ${active ? "opacity-100 translate-x-2" : "opacity-40"}`}
     >
       <div
-        className={`w-10 h-10 rounded-xl shadow-sm border flex items-center justify-center ${
-          active
-            ? isDarkMode
-              ? "text-[#58a6ff] border-[#1f242d] bg-[#161b22]"
-              : "text-[#3A506B] border-blue-100 bg-white"
-            : isDarkMode
-              ? "text-gray-600 border-gray-800 bg-[#161b22]"
-              : "text-gray-400 border-gray-100 bg-white"
-        }`}
+        className={`w-10 h-10 rounded-xl shadow-sm border flex items-center justify-center ${active
+          ? isDarkMode
+            ? "text-[#58a6ff] border-[#1f242d] bg-[#161b22]"
+            : "text-[#3A506B] border-blue-100 bg-white"
+          : isDarkMode
+            ? "text-gray-600 border-gray-800 bg-[#161b22]"
+            : "text-gray-400 border-gray-100 bg-white"
+          }`}
       >
         {icon}
       </div>
       <span
-        className={`font-bold tracking-wide ${
-          active
-            ? isDarkMode
-              ? "text-[#58a6ff]"
-              : "text-[#3A506B]"
-            : isDarkMode
-              ? "text-gray-600"
-              : "text-gray-400"
-        }`}
+        className={`font-bold tracking-wide ${active
+          ? isDarkMode
+            ? "text-[#58a6ff]"
+            : "text-[#3A506B]"
+          : isDarkMode
+            ? "text-gray-600"
+            : "text-gray-400"
+          }`}
       >
         {label}
       </span>
