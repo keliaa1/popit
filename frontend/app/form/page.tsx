@@ -148,6 +148,9 @@ const TEMPLATE_CONFIGS: Record<string, { title: string; steps: Step[] }> = {
   },
 };
 
+const API_BASE_URL = "https://paper-pop-backend-mruc.onrender.com";
+// const API_BASE_URL = "http://localhost:5000";
+
 function FormContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -216,7 +219,7 @@ function FormContent() {
   const generatePdf = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch("https://paper-pop-backend-mruc.onrender.com/generate-pdf", {
+      const response = await fetch(`${API_BASE_URL}/generate-pdf`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -261,7 +264,7 @@ function FormContent() {
   const generateImage = async () => {
     setIsGeneratingImage(true);
     try {
-      const response = await fetch("http://localhost:5000/generate-image", {
+      const response = await fetch(`${API_BASE_URL}/generate-image`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
