@@ -213,7 +213,7 @@ function FormContent() {
   const generatePdf = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch("http://localhost:5000/generate-pdf", {
+      const response = await fetch("https://paper-pop-backend-mruc.onrender.com/generate-pdf", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
