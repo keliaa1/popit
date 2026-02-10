@@ -160,7 +160,9 @@ function FormContent() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -171,6 +173,7 @@ function FormContent() {
     setCurrentStep(1);
     setFormData({});
     setPdfUrl(null);
+    setImageUrl(null);
   }, [templateId]);
 
   if (!mounted) return <div className="min-h-screen bg-white" />;
@@ -252,6 +255,42 @@ function FormContent() {
       console.error("Error generating PDF:", error);
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const generateImage = async () => {
+    setIsGeneratingImage(true);
+    try {
+      const response = await fetch("http://localhost:5000/generate-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...formData, templateId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.imageBase64) {
+          try {
+            const cleanBase64 = data.imageBase64.replace(/\s/g, "");
+            const binaryString = window.atob(cleanBase64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i);
+            }
+            const blob = new Blob([bytes], { type: "image/png" });
+            const url = window.URL.createObjectURL(blob);
+            setImageUrl(url);
+          } catch (error) {
+            console.error("Image decoding failed:", error);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error generating image:", error);
+    } finally {
+      setIsGeneratingImage(false);
     }
   };
 
@@ -557,8 +596,8 @@ function FormContent() {
           </div>
 
           <div className="w-full max-w-2xl flex justify-center flex-col items-center gap-8">
-            {pdfUrl ? (
-              <div className="flex flex-col items-center gap-6 animate-fade-in text-center">
+            {pdfUrl || imageUrl ? (
+              <div className="flex flex-col items-center gap-6 animate-fade-in text-center w-full max-w-lg">
                 <div
                   className={`w-20 h-20 rounded-full flex items-center justify-center mb-2 ${isDarkMode
                     ? "bg-green-900/30 text-green-400"
@@ -570,31 +609,76 @@ function FormContent() {
                 <h2
                   className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-800"}`}
                 >
-                  Your PDF is ready!
+                  Your Invitation is ready!
                 </h2>
-                <a
-                  href={pdfUrl}
-                  download={`${templateId}-invitation.pdf`}
-                  className={`flex items-center gap-4 px-12 py-5 rounded-xl text-white font-bold uppercase tracking-widest shadow-xl hover:scale-105 transition-all ${isDarkMode
-                    ? "bg-[#58a6ff] hover:bg-[#4a8ecc]"
-                    : "bg-[#1C2541]"
-                    }`}
-                >
-                  Download Invitation
-                </a>
+                <div className="flex flex-col sm:flex-row gap-4 w-full">
+                  {pdfUrl ? (
+                    <a
+                      href={pdfUrl}
+                      download={`${templateId}-invitation.pdf`}
+                      className={`flex-1 flex items-center justify-center gap-4 px-8 py-5 rounded-xl text-white font-bold uppercase tracking-widest shadow-xl hover:scale-105 transition-all ${isDarkMode
+                        ? "bg-[#58a6ff] hover:bg-[#4a8ecc]"
+                        : "bg-[#1C2541]"
+                        }`}
+                    >
+                      Download PDF
+                    </a>
+                  ) : (
+                    <button
+                      onClick={generatePdf}
+                      disabled={isGenerating}
+                      className={`flex-1 flex items-center justify-center gap-4 px-8 py-5 rounded-xl text-white font-bold uppercase tracking-widest transition-all ${isGenerating
+                        ? "bg-gray-200 cursor-not-allowed"
+                        : isDarkMode
+                          ? "bg-[#58a6ff] hover:bg-[#4a8ecc] hover:shadow-xl hover:scale-105"
+                          : "bg-[#1C2541] hover:shadow-xl hover:scale-105"
+                        }`}
+                    >
+                      {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
+                      {isGenerating ? "Generating..." : "Get PDF"}
+                    </button>
+                  )}
+
+                  {imageUrl ? (
+                    <a
+                      href={imageUrl}
+                      download={`${templateId}-invitation.png`}
+                      className={`flex-1 flex items-center justify-center gap-4 px-8 py-5 rounded-xl text-white font-bold uppercase tracking-widest shadow-xl hover:scale-105 transition-all ${isDarkMode
+                        ? "bg-[#238636] hover:bg-[#2ea043]"
+                        : "bg-green-600 hover:bg-green-700"
+                        }`}
+                    >
+                      Download Image
+                    </a>
+                  ) : (
+                    <button
+                      onClick={generateImage}
+                      disabled={isGeneratingImage}
+                      className={`flex-1 flex items-center justify-center gap-4 px-8 py-5 rounded-xl text-white font-bold uppercase tracking-widest transition-all ${isGeneratingImage
+                        ? "bg-gray-200 cursor-not-allowed"
+                        : isDarkMode
+                          ? "bg-[#238636] hover:bg-[#2ea043] hover:shadow-xl hover:scale-105"
+                          : "bg-green-600 hover:bg-green-700 hover:shadow-xl hover:scale-105"
+                        }`}
+                    >
+                      {isGeneratingImage ? <Loader2 className="w-5 h-5 animate-spin" /> : <ImageIcon className="w-5 h-5" />}
+                      {isGeneratingImage ? "Generating..." : "Get Image"}
+                    </button>
+                  )}
+                </div>
               </div>
             ) : (
               <button
                 onClick={handleNext}
-                disabled={isGenerating || !formData[currentStepData.field]}
-                className={`flex items-center gap-4 px-12 py-5 rounded-xl text-white font-bold uppercase tracking-widest transition-all ${isGenerating
+                disabled={isGenerating || isGeneratingImage || !formData[currentStepData.field]}
+                className={`flex items-center gap-4 px-12 py-5 rounded-xl text-white font-bold uppercase tracking-widest transition-all ${isGenerating || isGeneratingImage
                   ? "bg-gray-200 cursor-not-allowed"
                   : isDarkMode
                     ? "bg-[#238636] hover:bg-[#2ea043] hover:shadow-xl hover:scale-105 active:scale-95"
                     : "bg-[#1C2541] hover:shadow-xl hover:scale-105 active:scale-95"
                   }`}
               >
-                {isGenerating ? (
+                {isGenerating || isGeneratingImage ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
                     <span>Generating...</span>
@@ -602,7 +686,7 @@ function FormContent() {
                 ) : (
                   <>
                     <span>
-                      {currentStep === TOTAL_STEPS ? "Create PDF" : "Next"}
+                      {currentStep === TOTAL_STEPS ? "Create Invitation" : "Next"}
                     </span>
                     <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                   </>

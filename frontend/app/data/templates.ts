@@ -30,6 +30,6 @@ export const TEMPLATES: Template[] = [
     category: "Celebrate",
     price: "Free",
     code: "EVNT",
-    image: "/event/beige-backgorund.png",
+    image: "/cards/image3.jpg",
   },
 ];
